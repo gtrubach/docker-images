@@ -55,6 +55,7 @@ jobs:
         run: |
           echo VERSION=${{ steps.set-version.outputs.VERSION }}
           echo IMAGE_NAME=$IMAGE_NAME
+          echo IMAGE_NAME=$IMAGE_NAME
 
   push:
     needs: test

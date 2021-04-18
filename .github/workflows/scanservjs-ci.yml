@@ -76,6 +76,7 @@ jobs:
         with:
           context: ./scanservjs
           build-args: APP_VERSION=${{ steps.set-version.outputs.VERSION }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/scanservjs:${{ steps.set-version.outputs.VERSION }}

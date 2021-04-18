@@ -36,6 +36,25 @@ jobs:
             docker build . --file Dockerfile
           fi
         working-directory: scanservjs
+        
+      - name: Define version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
+          [[ "${{ github.event.inputs.version }}" ]] && VERSION=${{ github.event.inputs.version }}
+          
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^scanservjs-v//')
+
+          echo VERSION=$VERSION
+          echo '::set-output name=VERSION::$VERSION'
+        id: set-version
+        
+      - name: Echo vars
+        run: |
+          echo VERSION=${{ steps.set-version.outputs.VERSION }}
+          echo IMAGE_NAME=$IMAGE_NAME
 
   push:
     needs: test

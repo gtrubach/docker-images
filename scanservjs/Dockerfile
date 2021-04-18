@@ -1,7 +1,7 @@
 FROM node:alpine
 LABEL Name=scanservjs Version=0.0.1
 
-ARG APP_VERSION=latest
+ARG APP_VERSION=2.9.2
 
 ENV SANED_NET_HOSTS="" \
     SCANIMAGE_LIST_IGNORE="" \
@@ -20,7 +20,7 @@ RUN apk add --no-cache dbus avahi
 
 WORKDIR /usr/src/app
 
-RUN curl -s https://api.github.com/repos/sbs20/scanservjs/releases/${APP_VERSION} \
+RUN curl -s https://api.github.com/repos/sbs20/scanservjs/releases/tags/v${APP_VERSION} \
     | grep browser_download_url \
     | cut -d '"' -f 4 \
     | xargs curl -L \
@@ -30,8 +30,6 @@ RUN npm install --only=production
 
 COPY entrypoint.sh /entrypoint.sh
 RUN ["chmod", "+x", "/entrypoint.sh"]
-
-RUN dbus-daemon --system && avahi-daemon --no-chroot -D
 
 RUN addgroup -g 2001 -S scanservjs && \
     adduser -u 2001 -S scanservjs -G scanservjs

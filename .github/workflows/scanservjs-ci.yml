@@ -36,6 +36,20 @@ jobs:
             docker build . --file Dockerfile
           fi
         working-directory: scanservjs
+        
+      - name: Define version
+        run: |
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          
+          [[ "${{ github.event.inputs.name }}" ]] && VERSION=${{ github.event.inputs.name }}
+          
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^scanservjs-v//')
+
+          echo VERSION=$VERSION
+          echo '::set-output name=VERSION::$VERSION'
+        id: set-version
 
   push:
     needs: test
@@ -59,7 +73,9 @@ jobs:
         run: |
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
+          
+          [[ "${{ github.event.inputs.name }}" ]] && VERSION=${{ github.event.inputs.name }}
+          
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^scanservjs-v//')
 
@@ -77,5 +93,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/gtrubach/$IMAGE_NAME:latest
-            ghcr.io/gtrubach/$IMAGE_NAME:${{ steps.set-version.outputs.VERSION }}"
+            ghcr.io/gtrubach/$IMAGE_NAME:${{ steps.set-version.outputs.VERSION }}
             

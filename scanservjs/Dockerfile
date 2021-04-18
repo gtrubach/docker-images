@@ -29,10 +29,12 @@ RUN curl -s https://api.github.com/repos/sbs20/scanservjs/releases/tags/v${APP_V
 RUN npm install --only=production
 
 # Patching base path
-RUN sed -i -e "s/app.use(express.static('client'))/app.use(process.env.BASE_URL, express.static('client'))/g" server/server.js
+RUN sed -i 's|href="/|href="|g' client/index.html && \
+    sed -i 's|src="/|src="|g' client/index.html
 
 COPY entrypoint.sh /entrypoint.sh
 RUN ["chmod", "+x", "/entrypoint.sh"]
+RUN dos2unix /entrypoint.sh
 
 RUN addgroup -g 2001 -S scanservjs && \
     adduser -u 2001 -S scanservjs -G scanservjs

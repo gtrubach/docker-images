@@ -17,9 +17,6 @@ on:
         required: true
         default: 'latest'
 
-env:
-  IMAGE_NAME: scanservjs
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -78,6 +75,6 @@ jobs:
           build-args: APP_VERSION=${{ steps.set-version.outputs.VERSION }}
           push: true
           tags: |
-            ghcr.io/gtrubach/$IMAGE_NAME:latest
-            ghcr.io/gtrubach/$IMAGE_NAME:${{ steps.set-version.outputs.VERSION }}
+            ghcr.io/gtrubach/scanservjs:latest
+            ghcr.io/gtrubach/scanservjs:${{ steps.set-version.outputs.VERSION }}
             

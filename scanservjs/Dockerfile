@@ -28,6 +28,9 @@ RUN curl -s https://api.github.com/repos/sbs20/scanservjs/releases/tags/v${APP_V
 
 RUN npm install --only=production
 
+# Patching base path
+RUN sed -i -e "s/app.use(express.static('client'))/app.use(process.env.BASE_URL, express.static('client'))/g" server/server.js
+
 COPY entrypoint.sh /entrypoint.sh
 RUN ["chmod", "+x", "/entrypoint.sh"]
 

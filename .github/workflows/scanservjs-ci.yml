@@ -41,7 +41,7 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v2
@@ -59,7 +59,9 @@ jobs:
         run: |
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
+          
+          [[ "${{ github.event.inputs.version }}" ]] && VERSION=${{ github.event.inputs.version }}
+          
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^scanservjs-v//')
 
@@ -77,5 +79,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/gtrubach/$IMAGE_NAME:latest
-            ghcr.io/gtrubach/$IMAGE_NAME:${{ steps.set-version.outputs.VERSION }}"
+            ghcr.io/gtrubach/$IMAGE_NAME:${{ steps.set-version.outputs.VERSION }}
             
